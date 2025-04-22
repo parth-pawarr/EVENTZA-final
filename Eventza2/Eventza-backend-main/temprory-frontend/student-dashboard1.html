@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Eventza | Student Dashboard</title>
+  <script src="./js/studentDashboard.js" defer></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <!-- Navbar Placeholder -->
+  <nav class="bg-white shadow p-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold text-blue-600">Eventza</h1>
+    <ul class="flex space-x-4 text-gray-700 font-medium">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">My Events</a></li>
+      <li><a href="#">Profile</a></li>
+      <li><a href="#" onclick="logout()">Logout</a></li>
+    </ul>
+  </nav>
+
+  <!-- Events Section -->
+  <section class="p-6">
+    <h2 class="text-2xl font-semibold mb-4">Upcoming Events</h2>
+    <div id="eventsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <!-- Event cards will be injected here -->
+    </div>
+    <p id="noEventsMsg" class="text-gray-500 mt-4 hidden">No upcoming events found.</p>
+  </section>
+  <script>
+    async function registerForEvent(eventId) {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      alert("You're not logged in!");
+      return;
+    }
+
+    try {
+      const res = await fetch('http://localhost:5000/api/eventregistrations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token // No "Bearer", just the raw token
+        },
+        body: JSON.stringify({ eventId })
+      });
+
+      const data = await res.json();
+      console.log("Registration response:", data);
+
+      if (res.ok) {
+        alert("Successfully registered for the event!");
+      } else {
+        alert("Error: " + (data.message || "Could not register."));
+      }
+    } catch (err) {
+      console.error("Error during registration:", err);
+      alert("Something went wrong.");
+    }
+  }
+  </script>
+</body>
+</html>

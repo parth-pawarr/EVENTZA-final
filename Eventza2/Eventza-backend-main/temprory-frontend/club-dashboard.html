@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Club Management Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex">
+        <!-- Sidebar -->
+        <div class="bg-indigo-800 text-white w-64 py-6 flex flex-col">
+            <div class="px-6 mb-8">
+                <h1 class="text-2xl font-bold">Club Manager</h1>
+            </div>
+            <nav class="flex-1">
+                <ul>
+                    <li>
+                        <a href="#" class="flex items-center px-6 py-3 hover:bg-indigo-700" id="dashboard-link">
+                            <i class="fas fa-tachometer-alt mr-3"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center px-6 py-3 hover:bg-indigo-700" id="clubs-link">
+                            <i class="fas fa-users mr-3"></i>
+                            <span>My Clubs</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center px-6 py-3 hover:bg-indigo-700" id="events-link">
+                            <i class="fas fa-calendar-alt mr-3"></i>
+                            <span>Events</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center px-6 py-3 hover:bg-indigo-700" id="expenses-link">
+                            <i class="fas fa-money-bill-wave mr-3"></i>
+                            <span>Expenses</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center px-6 py-3 hover:bg-indigo-700" id="funds-link">
+                            <i class="fas fa-donate mr-3"></i>
+                            <span>Funds</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center px-6 py-3 hover:bg-indigo-700" id="participants-link">
+                            <i class="fas fa-user-plus mr-3"></i>
+                            <span>Participants</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="px-6 mt-auto">
+                <a href="#" class="flex items-center py-3 hover:bg-indigo-700" id="logout-link">
+                    <i class="fas fa-sign-out-alt mr-3"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top header -->
+            <header class="bg-white shadow-sm py-4 px-6 flex items-center justify-between">
+                <div class="flex items-center">
+                    <h2 class="text-xl font-semibold" id="page-title">Dashboard</h2>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <select id="club-selector" class="appearance-none bg-gray-100 border border-gray-300 rounded-md py-2 pl-3 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="">Select Club</option>
+                            <!-- Clubs will be loaded here -->
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </div>
+                    </div>
+                    <button class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded text-sm" id="add-btn">
+                        <i class="fas fa-plus mr-1"></i> <span id="add-btn-text">Add New</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content area -->
+            <main class="flex-1 overflow-auto py-6 px-6 bg-gray-100">
+                <!-- Dashboard Section -->
+                <div id="dashboard-section" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <!-- Stats cards -->
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <div class="flex items-center">
+                                <div class="p-3 rounded-full bg-indigo-100 text-indigo-500">
+                                    <i class="fas fa-users text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm text-gray-500">Total Clubs</p>
+                                    <h3 class="text-xl font-semibold" id="total-clubs">-</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <div class="flex items-center">
+                                <div class="p-3 rounded-full bg-green-100 text-green-500">
+                                    <i class="fas fa-calendar-check text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm text-gray-500">Upcoming Events</p>
+                                    <h3 class="text-xl font-semibold" id="upcoming-events">-</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <div class="flex items-center">
+                                <div class="p-3 rounded-full bg-blue-100 text-blue-500">
+                                    <i class="fas fa-donate text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm text-gray-500">Total Income</p>
+                                    <h3 class="text-xl font-semibold" id="total-income">$0</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <div class="flex items-center">
+                                <div class="p-3 rounded-full bg-red-100 text-red-500">
+                                    <i class="fas fa-money-bill-wave text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm text-gray-500">Total Expenses</p>
+                                    <h3 class="text-xl font-semibold" id="total-expenses">$0</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Recent Events -->
+                        <div class="bg-white rounded-lg shadow">
+                            <div class="px-6 py-4 border-b border-gray-200">
+                                <h3 class="text-lg font-semibold">Recent Events</h3>
+                            </div>
+                            <div class="p-6">
+                                <ul class="divide-y divide-gray-200" id="recent-events-list">
+                                    <li class="py-4">Loading events...</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Financial Summary -->
+                        <div class="bg-white rounded-lg shadow">
+                            <div class="px-6 py-4 border-b border-gray-200">
+                                <h3 class="text-lg font-semibold">Financial Summary</h3>
+                            </div>
+                            <div class="p-6 space-y-4">
+                                <div class="bg-gray-50 p-4 rounded">
+                                    <div class="flex justify-between mb-2">
+                                        <span class="text-gray-600">Total Income</span>
+                                        <span class="font-medium" id="total-income">$0</span>
+                                    </div>
+                                    <div class="flex justify-between mb-2">
+                                        <span class="text-gray-600">Total Expenses</span>
+                                        <span class="font-medium" id="expenses-summary">$0</span>
+                                    </div>
+                                    <div class="border-t border-gray-200 mt-2 pt-2 flex justify-between">
+                                        <span class="text-gray-800 font-medium">Balance</span>
+                                        <span class="font-bold text-green-600" id="balance-summary">$0</span>
+                                    </div>
+                                </div>
+                                
+                                <h4 class="font-medium text-gray-700 mt-4">Recent Transactions</h4>
+                                <ul class="divide-y divide-gray-200" id="recent-transactions">
+                                    <li class="py-3">Loading transactions...</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Clubs Section -->
+                <div id="clubs-section" class="hidden space-y-6">
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                            <h3 class="text-lg font-semibold">My Clubs</h3>
+                            <div class="relative">
+                                <input type="text" placeholder="Search clubs..." class="px-4 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="clubs-list">
+                                <div class="bg-gray-50 p-4 rounded-lg">Loading clubs...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Events Section -->
+                <div id="events-section" class="hidden space-y-6">
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                            <h3 class="text-lg font-semibold">Events</h3>
+                            <div class="flex space-x-4">
+                                <div class="relative">
+                                    <input type="text" placeholder="Search events..." class="px-4 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                                <div class="relative">
+                                    <select class="appearance-none bg-gray-100 border border-gray-300 rounded-md py-2 pl-3 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" id="event-filter">
+                                        <option value="all">All Events</option>
+                                        <option value="upcoming">Upcoming</option>
+                                        <option value="past">Past</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                        <i class="fas fa-chevron-down text-xs"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="events-list">
+                                <div class="bg-gray-50 p-4 rounded-lg">Loading events...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Expenses Section -->
+                <div id="expenses-section" class="hidden space-y-6">
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                            <h3 class="text-lg font-semibold">Expenses</h3>
+                            <div class="flex space-x-4">
+                                <div class="relative">
+                                    <input type="text" placeholder="Search expenses..." class="px-4 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                                <div class="relative">
+                                    <select class="appearance-none bg-gray-100 border border-gray-300 rounded-md py-2 pl-3 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" id="expense-filter">
+                                        <option value="all">All Expenses</option>
+                                        <option value="this-month">This Month</option>
+                                        <option value="last-month">Last Month</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                        <i class="fas fa-chevron-down text-xs"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Club</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200" id="expenses-table-body">
+                                    <tr>
+                                        <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">Loading expenses...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Funds Section -->
+                <div id="funds-section" class="hidden space-y-6">
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                            <h3 class="text-lg font-semibold">Club Funds</h3>
+                            <div class="flex space-x-4">
+                                <div class="relative">
+                                    <input type="text" placeholder="Search funds..." class="px-4 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Source</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Club</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200" id="funds-table-body">
+                                    <tr>
+                                        <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">Loading funds...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Participants Section -->
+                <div id="participants-section" class="hidden space-y-6">
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                            <h3 class="text-lg font-semibold">Event Participants</h3>
+                            <div class="flex space-x-4">
+                                <div class="relative">
+                                    <select class="appearance-none bg-gray-100 border border-gray-300 rounded-md py-2 pl-3 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" id="event-selector">
+                                        <option value="">Select Event</option>
+                                        <!-- Events will be loaded here -->
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                        <i class="fas fa-chevron-down text-xs"></i>
+                                    </div>
+                                </div>
+                                <div class="relative">
+                                    <input type="text" placeholder="Search participants..." class="px-4 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registration Date</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200" id="participants-table-body">
+                                    <tr>
+                                        <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">Select an event to view participants</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal for adding/editing content -->
+    <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white rounded-lg shadow-lg max-w-2xl w-full mx-4">
+            <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-lg font-semibold" id="modal-title">Add New</h3>
+                <button id="close-modal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <!-- Dynamic Form Content -->
+                <div id="modal-form-container">
+                    <!-- Form will be loaded here based on context -->
+                </div>
+            </div>
+            <div class="px-6 py-4 border-t border-gray-200 flex justify-end">
+                <button id="cancel-modal" class="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded mr-2">
+                    Cancel
+                </button>
+                <button id="save-modal" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded">
+                    Save
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform transition-transform duration-300 translate-y-24 opacity-0 flex items-center">
+        <div id="toast-message">Operation successful!</div>
+        <button id="close-toast" class="ml-4 text-white">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <script src="./js/Cdash.js"></script>
+</body>
+</html>

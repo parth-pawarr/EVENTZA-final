@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Eventza | Student Dashboard</title>
+  <script src="./js/studentDashboard.js" defer></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-dark: #1a0033;
+      --primary-purple: #2d1b69;
+      --accent-pink: #ff4d8d;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--primary-dark);
+    }
+    .gradient-text {
+      background: linear-gradient(90deg, #4169E1, #9400D3, #FF1493);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: bold;
+    }
+    .nav-link {
+      transition: all 0.3s ease;
+    }
+    .nav-link:hover {
+      color: var(--accent-pink);
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+      animation: cardEntrance 0.8s ease-out;
+      animation-fill-mode: backwards;
+    }
+    .card:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    @keyframes cardEntrance {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+        filter: blur(5px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+        filter: blur(0);
+      }
+    }
+    .search-bar {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .hero-section {
+      background: linear-gradient(45deg, var(--primary-purple), var(--primary-dark));
+      padding: 4rem 0;
+    }
+    .event-card {
+      background: rgba(255, 255, 255, 0.07);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+      animation: cardEntrance 0.8s ease-out;
+      animation-fill-mode: backwards;
+    }
+    .event-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .smooth-scroll {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-white smooth-scroll">
+  <!-- Navbar -->
+  <nav class="bg-opacity-10 bg-white backdrop-filter backdrop-blur-lg fixed w-full top-0 z-50 border-b border-gray-800">
+    <div class="container mx-auto px-6 py-4">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center space-x-8">
+          <h1 class="text-3xl font-bold gradient-text">Eventza</h1>
+          <div class="hidden md:flex space-x-6">
+            <a href="#" class="nav-link">Home</a>
+            <a href="#" class="nav-link">Events</a>
+            <a href="#" class="nav-link">About</a>
+            <a href="#" class="nav-link">Contact</a>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <div class="relative">
+            <input type="text" placeholder="Search events..." class="search-bar px-4 py-2 rounded-lg text-white w-64">
+          </div>
+          <select class="bg-opacity-20 bg-white backdrop-filter backdrop-blur-lg rounded-lg px-4 py-2 text-white">
+            <option>All Categories</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-section mt-16 text-center">
+    <h1 class="text-4xl md:text-5xl font-bold mb-6 gradient-text">College Club Event Management</h1>
+    <p class="text-xl text-gray-300 mb-8">A comprehensive platform for managing college club events, registrations, and financial tracking.</p>
+    <button class="bg-pink-500 hover:bg-pink-600 text-white px-8 py-3 rounded-lg font-semibold transition duration-300">
+      Get Started
+    </button>
+  </section>
+
+  <!-- Main Content -->
+  <div class="container mx-auto px-6 py-12">
+    <!-- Dashboard Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+      <div class="card rounded-xl p-8 text-center">
+        <div class="text-blue-500 text-5xl mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold mb-2">Students</h3>
+        <p class="text-gray-400 mb-4">Register for events and workshops hosted by various college clubs.</p>
+        <button onclick="scrollToEvents()" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition duration-300">
+          Register for Event
+        </button>
+      </div>
+
+      <div class="card rounded-xl p-8 text-center">
+        <div class="text-purple-500 text-5xl mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold mb-2">Club Members</h3>
+        <p class="text-gray-400 mb-4">Create and manage events, track expenses, and monitor registrations.</p>
+        <button class="bg-purple-500 hover:bg-purple-600 text-white px-6 py-2 rounded-lg transition duration-300">
+          Club Member Login
+        </button>
+      </div>
+
+      <div class="card rounded-xl p-8 text-center">
+        <div class="text-pink-500 text-5xl mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold mb-2">Admin</h3>
+        <p class="text-gray-400 mb-4">Oversee all events, access financial reports, and manage club activities.</p>
+        <button class="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-lg transition duration-300">
+          Admin Login
+        </button>
+      </div>
+    </div>
+
+    <!-- Events Section -->
+    <div id="events-section" class="mb-12">
+      <h2 class="text-3xl font-bold mb-8 gradient-text text-center">Upcoming Events</h2>
+      <div id="eventsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Event cards will be dynamically injected here -->
+      </div>
+      <p id="noEventsMsg" class="text-gray-400 mt-4 text-center hidden">No upcoming events found.</p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-opacity-10 bg-white backdrop-filter backdrop-blur-lg border-t border-gray-800 mt-12">
+    <div class="container mx-auto px-6 py-8">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="mb-6 md:mb-0">
+          <h3 class="text-2xl font-bold gradient-text">Eventza</h3>
+          <p class="text-gray-400 mt-2">Your one-stop platform for all college events</p>
+        </div>
+        <div class="flex space-x-6">
+          <a href="#" class="text-gray-400 hover:text-white transition duration-300">About</a>
+          <a href="#" class="text-gray-400 hover:text-white transition duration-300">Contact</a>
+          <a href="#" class="text-gray-400 hover:text-white transition duration-300">Privacy Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function scrollToEvents() {
+      document.getElementById('events-section').scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+
+    // Add animation delays to cards dynamically
+    document.addEventListener('DOMContentLoaded', function() {
+      const cards = document.querySelectorAll('.card');
+      cards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.2}s`;
+      });
+
+      const eventCards = document.querySelectorAll('.event-card');
+      eventCards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.2}s`;
+      });
+    });
+  </script>
+</body>
+</html>

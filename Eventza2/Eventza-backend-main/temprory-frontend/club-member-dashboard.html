@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Club Dashboard - Event Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <div class="w-64 bg-indigo-800 text-white p-4">
+            <div class="text-2xl font-bold mb-8 p-2">Club Dashboard</div>
+            <nav>
+                <ul>
+                    <li class="mb-2">
+                        <a href="#" class="dashboard-link flex items-center p-2 rounded hover:bg-indigo-700" data-section="dashboard">
+                            <i class="fas fa-tachometer-alt w-6"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="#" class="dashboard-link flex items-center p-2 rounded hover:bg-indigo-700" data-section="events">
+                            <i class="fas fa-calendar-alt w-6"></i>
+                            <span>Events</span>
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="#" class="dashboard-link flex items-center p-2 rounded hover:bg-indigo-700" data-section="members">
+                            <i class="fas fa-users w-6"></i>
+                            <span>Members</span>
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="#" class="dashboard-link flex items-center p-2 rounded hover:bg-indigo-700" data-section="finances">
+                            <i class="fas fa-dollar-sign w-6"></i>
+                            <span>Finances</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1">
+            <!-- Top Bar -->
+            <div class="bg-white p-4 shadow-md flex justify-between items-center">
+                <h1 class="text-xl font-semibold" id="club-name-header">Club Name</h1>
+                <div class="flex items-center">
+                    <span class="mr-4" id="member-name">Member Name</span>
+                    <img src="https://via.placeholder.com/36" alt="Profile" class="rounded-full">
+                </div>
+            </div>
+
+            <!-- Content Sections -->
+            <div class="p-6">
+                <!-- Dashboard Section -->
+                <div id="dashboard-section" class="dashboard-content">
+                    <h2 class="text-2xl font-bold mb-4">Club Overview</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                        <div class="bg-white p-4 rounded shadow">
+                            <h3 class="text-gray-500 text-sm">Total Members</h3>
+                            <p class="text-2xl font-bold" id="total-members">Loading...</p>
+                        </div>
+                        <div class="bg-white p-4 rounded shadow">
+                            <h3 class="text-gray-500 text-sm">Upcoming Events</h3>
+                            <p class="text-2xl font-bold" id="upcoming-events">Loading...</p>
+                        </div>
+                        <div class="bg-white p-4 rounded shadow">
+                            <h3 class="text-gray-500 text-sm">Total Income</h3>
+                            <p class="text-2xl font-bold" id="total-income">Loading...</p>
+                        </div>
+                        <div class="bg-white p-4 rounded shadow">
+                            <h3 class="text-gray-500 text-sm">Total Expenses</h3>
+                            <p class="text-2xl font-bold" id="total-expenses-dash">Loading...</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-white p-4 rounded shadow">
+                            <h3 class="font-bold mb-2">Upcoming Events</h3>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-white">
+                                    <thead>
+                                        <tr>
+                                            <th class="py-2 px-4 border-b text-left">Event Name</th>
+                                            <th class="py-2 px-4 border-b text-left">Date</th>
+                                            <th class="py-2 px-4 border-b text-left">Venue</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="upcoming-events-list">
+                                        <tr>
+                                            <td colspan="3" class="py-2 px-4 text-center">Loading events...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white p-4 rounded shadow">
+                            <h3 class="font-bold mb-2">Financial Summary</h3>
+                            <div class="h-64" id="finance-chart">
+                                <!-- Chart will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Events Section -->
+                <div id="events-section" class="dashboard-content hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-bold">Event Management</h2>
+                        <button id="create-event-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded">
+                            Create New Event
+                        </button>
+                    </div>
+                    
+                    <div class="bg-white rounded shadow p-4 mb-6">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full bg-white">
+                                <thead>
+                                    <tr>
+                                        <th class="py-2 px-4 border-b text-left">Event Name</th>
+                                        <th class="py-2 px-4 border-b text-left">Date</th>
+                                        <th class="py-2 px-4 border-b text-left">Venue</th>
+                                        <th class="py-2 px-4 border-b text-left">Participants</th>
+                                        <th class="py-2 px-4 border-b text-left">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="events-list">
+                                    <tr>
+                                        <td colspan="5" class="py-2 px-4 text-center">Loading events...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Event Details View (Initially Hidden) -->
+                    <div id="event-details" class="hidden">
+                        <div class="flex items-center mb-4">
+                            <button id="back-to-events" class="mr-2 text-indigo-600 hover:text-indigo-800">
+                                <i class="fas fa-arrow-left"></i> Back
+                            </button>
+                            <h3 class="text-xl font-bold" id="event-details-name"></h3>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+                            <div class="bg-white p-4 rounded shadow">
+                                <h4 class="font-bold mb-2">Event Info</h4>
+                                <div id="event-info">
+                                    <p><strong>Description:</strong> <span id="event-details-description"></span></p>
+                                    <p><strong>Date:</strong> <span id="event-details-date"></span></p>
+                                    <p><strong>Venue:</strong> <span id="event-details-venue"></span></p>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white p-4 rounded shadow">
+                                <h4 class="font-bold mb-2">Registration</h4>
+                                <p class="mb-2"><strong>Total Participants:</strong> <span id="event-details-participants">Loading...</span></p>
+                                <div class="flex flex-col space-y-2">
+                                    <button class="text-indigo-600 hover:text-indigo-800" id="view-participants-btn">View Participants</button>
+                                    <button class="text-indigo-600 hover:text-indigo-800" id="export-participants-btn">Export to Excel</button>
+                                    <button class="text-indigo-600 hover:text-indigo-800" id="add-participants-btn">Add Participants</button>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white p-4 rounded shadow">
+                                <h4 class="font-bold mb-2">Finances</h4>
+                                <p><strong>Income:</strong> <span id="event-details-income">Loading...</span></p>
+                                <p><strong>Expenses:</strong> <span id="event-details-expenses">Loading...</span></p>
+                                <p><strong>Balance:</strong> <span id="event-details-balance">Loading...</span></p>
+                                <div class="flex flex-col space-y-2 mt-2">
+                                    <button class="text-indigo-600 hover:text-indigo-800" id="add-income-btn">Add Income</button>
+                                    <button class="text-indigo-600 hover:text-indigo-800" id="add-expense-btn">Add Expense</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="participants-list-container" class="bg-white p-4 rounded shadow mb-6 hidden">
+                            <h4 class="font-bold mb-2">Participants List</h4>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-white">
+                                    <thead>
+                                        <tr>
+                                            <th class="py-2 px-4 border-b text-left">Name</th>
+                                            <th class="py-2 px-4 border-b text-left">Email</th>
+                                            <th class="py-2 px-4 border-b text-left">Registration Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="participants-list">
+                                        <tr>
+                                            <td colspan="3" class="py-2 px-4 text-center">Loading participants...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div id="expenses-list-container" class="bg-white p-4 rounded shadow mb-6 hidden">
+                            <h4 class="font-bold mb-2">Expenses</h4>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-white">
+                                    <thead>
+                                        <tr>
+                                            <th class="py-2 px-4 border-b text-left">Description</th>
+                                            <th class="py-2 px-4 border-b text-left">Amount</th>
+                                            <th class="py-2 px-4 border-b text-left">Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="expenses-list">
+                                        <tr>
+                                            <td colspan="3" class="py-2 px-4 text-center">Loading expenses...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Members Section -->
+                <div id="members-section" class="dashboard-content hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-bold">Club Members</h2>
+                        <button id="add-member-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded">
+                            Add New Member
+                        </button>
+                    </div>
+                    
+                    <div class="bg-white rounded shadow p-4 mb-6">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full bg-white">
+                                <thead>
+                                    <tr>
+                                        <th class="py-2 px-4 border-b text-left">Name</th>
+                                        <th class="py-2 px-4 border-b text-left">Email</th>
+                                        <th class="py-2 px-4 border-b text-left">Role</th>
+                                        <th class="py-2 px-4 border-b text-left">Joined Date</th>
+                                        <th class="py-2 px-4 border-b text-left">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="members-list">
+                                    <tr>
+                                        <td colspan="5" class="py-2 px-4 text-center">Loading members...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Finances Section -->
+                <div id="finances-section" class="dashboard-content hidden">
+                    <h2 class="text-2xl font-bold mb-4">Financial Management</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-white p-4 rounded shadow">
+                            <h3 class="text-gray-500 text-sm">Total Income</h3>
+                            <p class="text-2xl font-bold" id="finance-total-income">Loading...</p>
+                        </div>
+                        <div class="bg-white p-4 rounded shadow">
+                            <h3 class="text-gray-500 text-sm">Total Expenses</h3>
+                            <p class="text-2xl font-bold" id="finance-total-expenses">Loading...</p>
+                        </div>
+                        <div class="bg-white p-4 rounded shadow">
+                            <h3 class="text-gray-500 text-sm">Balance</h3>
+                            <p class="text-2xl font-bold" id="finance-balance">Loading...</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-white p-4 rounded shadow">
+                            <h3 class="font-bold mb-2">Income Overview</h3>
+                            <div class="h-64" id="income-chart">
+                                <!-- Income chart will be rendered here -->
+                            </div>
+                        </div>
+                        <div class="bg-white p-4 rounded shadow">
+                            <h3 class="font-bold mb-2">Expense Breakdown</h3>
+                            <div class="h-64" id="expense-chart">
+                                <!-- Expense chart will be rendered here -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded shadow p-4 mb-6">
+                        <h3 class="font-bold mb-2">Income Records</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full bg-white">
+                                <thead>
+                                    <tr>
+                                        <th class="py-2 px-4 border-b text-left">Event</th>
+                                        <th class="py-2 px-4 border-b text-left">Description</th>
+                                        <th class="py-2 px-4 border-b text-left">Amount</th>
+                                        <th class="py-2 px-4 border-b text-left">Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="income-list">
+                                    <tr>
+                                        <td colspan="4" class="py-2 px-4 text-center">Loading income records...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded shadow p-4">
+                        <h3 class="font-bold mb-2">Expense Records</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full bg-white">
+                                <thead>
+                                    <tr>
+                                        <th class="py-2 px-4 border-b text-left">Event</th>
+                                        <th class="py-2 px-4 border-b text-left">Description</th>
+                                        <th class="py-2 px-4 border-b text-left">Amount</th>
+                                        <th class="py-2 px-4 border-b text-left">Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="expense-list">
+                                    <tr>
+                                        <td colspan="4" class="py-2 px-4 text-center">Loading expense records...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for Creating Event -->
+    <div id="create-event-modal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center hidden">
+        <div class="bg-white p-6 rounded shadow-lg w-full max-w-md">
+            <h3 class="text-xl font-bold mb-4">Create New Event</h3>
+            <form id="create-event-form">
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Event Name:</label>
+                    <input type="text" id="event-name" class="border rounded p-2 w-full" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Description:</label>
+                    <textarea id="event-description" class="border rounded p-2 w-full h-24"></textarea>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Date:</label>
+                    <input type="datetime-local" id="event-date" class="border rounded p-2 w-full" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Venue:</label>
+                    <input type="text" id="event-venue" class="border rounded p-2 w-full" required>
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" class="bg-gray-300 hover:bg-gray-400 text-black py-2 px-4 rounded mr-2" id="cancel-event-btn">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded">
+                        Create
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal for Adding Expense -->
+    <div id="add-expense-modal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center hidden">
+        <div class="bg-white p-6 rounded shadow-lg w-full max-w-md">
+            <h3 class="text-xl font-bold mb-4">Add New Expense</h3>
+            <form id="add-expense-form">
+                <input type="hidden" id="expense-event-id">
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Amount:</label>
+                    <input type="number" id="expense-amount" class="border rounded p-2 w-full" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Description:</label>
+                    <textarea id="expense-description" class="border rounded p-2 w-full h-24" required></textarea>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Date:</label>
+                    <input type="date" id="expense-date" class="border rounded p-2 w-full" required>
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" class="bg-gray-300 hover:bg-gray-400 text-black py-2 px-4 rounded mr-2" id="cancel-expense-btn">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded">
+                        Add Expense
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal for Adding Income -->
+    <div id="add-income-modal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center hidden">
+        <div class="bg-white p-6 rounded shadow-lg w-full max-w-md">
+            <h3 class="text-xl font-bold mb-4">Add Event Income</h3>
+            <form id="add-income-form">
+                <input type="hidden" id="income-event-id">
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Amount:</label>
+                    <input type="number" id="income-amount" class="border rounded p-2 w-full" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Description:</label>
+                    <textarea id="income-description" class="border rounded p-2 w-full h-24" required></textarea>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Date:</label>
+                    <input type="date" id="income-date" class="border rounded p-2 w-full" required>
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" class="bg-gray-300 hover:bg-gray-400 text-black py-2 px-4 rounded mr-2" id="cancel-income-btn">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded">
+                        Add Income
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal for Adding Club Member -->
+    <div id="add-member-modal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center hidden">
+        <div class="bg-white p-6 rounded shadow-lg w-full max-w-md">
+            <h3 class="text-xl font-bold mb-4">Add New Member</h3>
+            <form id="add-member-form">
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">User:</label>
+                    <select id="user-select" class="border rounded p-2 w-full" required>
+                        <option value="">Select a User</option>
+                        <!-- User options will be loaded here -->
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Role:</label>
+                    <select id="role-select" class="border rounded p-2 w-full" required>
+                        <option value="">Select a Role</option>
+                        <option value="President">President</option>
+                        <option value="Vice President">Vice President</option>
+                        <option value="Secretary">Secretary</option>
+                        <option value="Treasurer">Treasurer</option>
+                        <option value="Event Coordinator">Event Coordinator</option>
+                        <option value="Member">Member</option>
+                        <option value="Volunteer">Volunteer</option>
+                    </select>
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" class="bg-gray-300 hover:bg-gray-400 text-black py-2 px-4 rounded mr-2" id="cancel-member-btn">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded">
+                        Add Member
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal for Adding Event Participants -->
+    <div id="add-participants-modal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center hidden">
+        <div class="bg-white p-6 rounded shadow-lg w-full max-w-md">
+            <h3 class="text-xl font-bold mb-4">Add Participants</h3>
+            <form id="add-participants-form">
+                <input type="hidden" id="participant-event-id">
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Select Members:</label>
+                    <div class="border p-2 rounded max-h-64 overflow-y-auto" id="members-checkbox-container">
+                        <!-- Member checkboxes will be loaded here -->
+                        <p>Loading members...</p>
+                    </div>
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" class="bg-gray-300 hover:bg-gray-400 text-black py-2 px-4 rounded mr-2" id="cancel-participants-btn">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded">
+                        Add Selected
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="js/club-dashboard/club-dashboard.js"></script>
+    <script src="js/club-dashboard/events.js"></script>
+    <script src="js/club-dashboard/finances.js"></script>
+    <script src="js/club-dashboard/members.js"></script>
+</body>
+</html>
