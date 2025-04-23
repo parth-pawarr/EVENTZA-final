@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const Event = require("../models/event");
-// const verifyToken = require("../middleware/verifyToken"); 
-// const isFacultyOrAdmin = require("../middleware/isFacultyOrAdmin");
+const verifyToken = require("../middleware/verifyToken");
+const isFacultyOrAdmin = require("../middleware/isFacultyOrAdmin");
 
-router.post("/", async (req, res) => {
+// Create event (protected, faculty/admin only)
+router.post("/", verifyToken, isFacultyOrAdmin, async (req, res) => {
   try {
     const event = new Event(req.body);
     await event.save();
@@ -14,6 +15,7 @@ router.post("/", async (req, res) => {
   }
 });
 
+// Get all events (public)
 router.get("/", async (req, res) => {
   try {
     const events = await Event.find().populate("club_id", "club_name");

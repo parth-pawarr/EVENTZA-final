@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const Fund = require("../models/fund");
-// const verifyToken = require("../middleware/verifyToken"); 
-// const isAdmin = require("../middleware/isAdmin");
+const verifyToken = require("../middleware/verifyToken");
+const isAdmin = require("../middleware/isAdmin");
 
-router.post("/", async (req, res) => {
+// Create fund (protected, admin only)
+router.post("/", verifyToken, isAdmin, async (req, res) => {
   try {
     const fund = new Fund(req.body);
     await fund.save();
@@ -14,7 +15,8 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
+// Update fund (protected, admin only)
+router.put("/:id", verifyToken, isAdmin, async (req, res) => {
   try {
     const updated = await Fund.findByIdAndUpdate(req.params.id, req.body, { new: true });
     res.json(updated);
@@ -23,7 +25,8 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.get("/", async (req, res) => {
+// Get all funds (protected)
+router.get("/", verifyToken, async (req, res) => {
   try {
     const funds = await Fund.find().populate("club_id", "club_name").populate("approved_by", "name");
     res.json(funds);

@@ -33,7 +33,22 @@ document.addEventListener('DOMContentLoaded', function() {
     // Functions for event management
     async function loadEvents() {
         try {
-            const response = await fetch(`/api/events?club_id=${currentClubId}`);
+            const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error('No authentication token found');
+            }
+
+            const response = await fetch(`http://localhost:5000/api/events?club_id=${currentClubId}`, {
+                headers: {
+                    'Authorization': token,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch events');
+            }
+
             const events = await response.json();
             
             if (events.length > 0) {
@@ -76,12 +91,32 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } catch (error) {
             console.error('Error loading events:', error);
+            document.getElementById('events-list').innerHTML = `
+                <tr>
+                    <td colspan="5" class="py-2 px-4 text-center text-red-600">Error: ${error.message}</td>
+                </tr>
+            `;
         }
     }
     
     async function loadParticipantCount(eventId) {
         try {
-            const response = await fetch(`/api/event-registrations?event_id=${eventId}`);
+            const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error('No authentication token found');
+            }
+
+            const response = await fetch(`http://localhost:5000/api/event-registrations?event_id=${eventId}`, {
+                headers: {
+                    'Authorization': token,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch participants');
+            }
+
             const participants = await response.json();
             
             const countElement = document.getElementById(`participant-count-${eventId}`);
@@ -90,6 +125,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } catch (error) {
             console.error(`Error loading participant count for event ${eventId}:`, error);
+            const countElement = document.getElementById(`participant-count-${eventId}`);
+            if (countElement) {
+                countElement.textContent = 'Error';
+            }
         }
     }
     
@@ -109,12 +148,19 @@ document.addEventListener('DOMContentLoaded', function() {
         const description = document.getElementById('event-description').value;
         const date = document.getElementById('event-date').value;
         const venue = document.getElementById('event-venue').value;
+        const token = localStorage.getItem('token');
+        
+        if (!token) {
+            alert('You must be logged in to create an event');
+            return;
+        }
         
         try {
-            const response = await fetch('/api/events', {
+            const response = await fetch('http://localhost:5000/api/events', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': token
                 },
                 body: JSON.stringify({
                     event_name: eventName,
@@ -125,16 +171,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
             });
             
-            if (response.ok) {
-                hideCreateEventModal();
-                loadEvents();
-            } else {
-                const error = await response.json();
-                alert(`Error creating event: ${error.message}`);
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to create event');
             }
+            
+            const data = await response.json();
+            hideCreateEventModal();
+            loadEvents();
+            alert('Event created successfully!');
         } catch (error) {
             console.error('Error creating event:', error);
-            alert('Error creating event. Please try again.');
+            alert(`Error creating event: ${error.message}`);
         }
     }
     

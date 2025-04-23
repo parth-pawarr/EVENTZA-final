@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Global variables
-    const currentClubId = localStorage.getItem('clubId') || '1';
-    const currentUserId = localStorage.getItem('userId') || '1';
+    const currentClubId = localStorage.getItem('clubId');
+    const currentUserId = localStorage.getItem('userId');
+    const BASE_URL = 'http://localhost:5000/api';
     
     // Financial data containers
     let incomeData = [];
@@ -17,47 +18,49 @@ document.addEventListener('DOMContentLoaded', function() {
     loadFinancialData();
     
     // Event listeners
-    document.getElementById('add-income-btn').addEventListener('click', () => showAddIncomeModal());
-    document.getElementById('cancel-income-btn').addEventListener('click', hideAddIncomeModal);
-    document.getElementById('add-income-form').addEventListener('submit', addIncome);
+    document.getElementById('add-income-btn')?.addEventListener('click', () => showAddIncomeModal());
+    document.getElementById('cancel-income-btn')?.addEventListener('click', hideAddIncomeModal);
+    document.getElementById('add-income-form')?.addEventListener('submit', addIncome);
     
-    document.getElementById('add-expense-btn').addEventListener('click', () => showAddExpenseModal());
-    document.getElementById('cancel-expense-btn').addEventListener('click', hideAddExpenseModal);
-    document.getElementById('add-expense-form').addEventListener('submit', addExpense);
+    document.getElementById('add-expense-btn')?.addEventListener('click', () => showAddExpenseModal());
+    document.getElementById('cancel-expense-btn')?.addEventListener('click', hideAddExpenseModal);
+    document.getElementById('add-expense-form')?.addEventListener('submit', addExpense);
     
     // Functions
     async function loadFinancialData() {
         try {
-            // Fetch all events for the club
-            const eventsResponse = await fetch(`/api/events?club_id=${currentClubId}`);
-            events = await eventsResponse.json();
-            
-            // Get all event IDs for this club
-            const eventIds = events.map(event => event._id);
-            
-            // Fetch all expenses for events in this club
-            const expensesResponse = await fetch(`/api/expenses`);
-            const allExpenses = await expensesResponse.json();
-            
-            // Filter expenses for this club's events
-            expenseData = allExpenses.filter(expense => {
-                const eventId = typeof expense.event_id === 'object' ? 
-                    expense.event_id._id : expense.event_id;
-                return eventIds.includes(eventId);
+            const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error('No authentication token found');
+            }
+
+            if (!currentClubId) {
+                throw new Error('No club ID found. Please log in again.');
+            }
+
+            console.log('Loading financial data for club:', currentClubId);
+            console.log('Using token:', token);
+
+            // Fetch club financial data
+            const financialResponse = await fetch(`${BASE_URL}/clubs/${currentClubId}/financial`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': token,
+                    'Content-Type': 'application/json'
+                }
             });
+
+            if (!financialResponse.ok) {
+                const errorData = await financialResponse.json();
+                throw new Error(errorData.message || 'Failed to load financial data');
+            }
+
+            const financialData = await financialResponse.json();
+            console.log('Financial data received:', financialData);
             
-            // For now, we'll assume income data is stored in the same way
-            // In a real app, you might have a separate income model
-            // For demo, we'll generate some sample income data based on events
-            incomeData = events.map(event => {
-                return {
-                    _id: `income-${event._id}`,
-                    event_id: event,
-                    amount: Math.floor(Math.random() * 5000) + 1000, // Random amount between 1000-6000
-                    description: `Registration fees for ${event.event_name}`,
-                    created_at: event.date
-                };
-            });
+            // Update the data arrays
+            incomeData = financialData.funds || [];
+            expenseData = financialData.expenses || [];
             
             // Update financial summary
             updateFinancialSummary();
@@ -71,7 +74,15 @@ document.addEventListener('DOMContentLoaded', function() {
             
         } catch (error) {
             console.error('Error loading financial data:', error);
-            alert('Error loading financial data. Please try again.');
+            // Show more detailed error message
+            alert(`Error loading financial data: ${error.message}`);
+            
+            // Update UI to show error state
+            document.getElementById('total-income')?.textContent = 'Error';
+            document.getElementById('total-expenses-dash')?.textContent = 'Error';
+            document.getElementById('finance-total-income')?.textContent = 'Error';
+            document.getElementById('finance-total-expenses')?.textContent = 'Error';
+            document.getElementById('finance-balance')?.textContent = 'Error';
         }
     }
     
